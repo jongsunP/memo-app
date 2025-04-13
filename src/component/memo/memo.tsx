@@ -1,7 +1,5 @@
-import styled from "styled-components";
-
 const Memo = () => {
-  return <div>Memo</div>;
+  return <div>Memoss</div>;
 };
 
 export default Memo;
