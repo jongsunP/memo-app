@@ -3,33 +3,242 @@
 import { useEffect, useState } from "react";
 import styles from "./memo.module.css";
 
+type CountType = {
+  [key: string]: number;
+};
+
 const Memo = () => {
-  const [memo, setMemo] = useState("");
+  // 카운트
+  const [inBoatCountState, setInBoatCountState] = useState<number>(0);
+  const [magicBoatCountState, setMagicBoatCountState] = useState<number>(0);
+  const [outBoatCountState, setOutBoatCountState] = useState<number>(0);
 
-  const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setMemo(e.target.value);
-  };
+  // 총합 카운트
+  const [inBoatTotalCountState, setInBoatTotalCountState] = useState<number>(0);
+  const [magicBoatTotalCountState, setMagicBoatTotalCountState] =
+    useState<number>(0);
+  const [outBoatTotalCountState, setOutBoatTotalCountState] =
+    useState<number>(0);
 
+  // 저장
   const handleSave = () => {
-    localStorage.setItem("memo", memo);
+    const month = new Date().getMonth() + 1;
+    const day = new Date().getDate();
+    const key = `${month}-${day}`;
+
+    const inBoatLocalData: CountType = localStorage?.getItem("inBoatCount")
+      ? JSON.parse(localStorage.getItem("inBoatCount") || "{}")
+      : {};
+    const magicBoatLocalData: CountType = localStorage?.getItem(
+      "magicBoatCount"
+    )
+      ? JSON.parse(localStorage.getItem("magicBoatCount") || "{}")
+      : {};
+    const outBoatLocalData: CountType = localStorage?.getItem("outBoatCount")
+      ? JSON.parse(localStorage.getItem("outBoatCount") || "{}")
+      : {};
+
+    // 새로운 데이터 추가
+    const newInBoatData = inBoatLocalData[key]
+      ? inBoatLocalData[key] + inBoatCountState
+      : inBoatCountState;
+    const newMagicBoatData = magicBoatLocalData[key]
+      ? magicBoatLocalData[key] + magicBoatCountState
+      : magicBoatCountState;
+    const newOutBoatData = outBoatLocalData[key]
+      ? outBoatLocalData[key] + outBoatCountState
+      : outBoatCountState;
+
+    // 로컬스토리지에 저장
+    localStorage?.setItem(
+      "inBoatCount",
+      JSON.stringify({
+        ...inBoatLocalData,
+        [key]: newInBoatData,
+      })
+    );
+    localStorage?.setItem(
+      "magicBoatCount",
+      JSON.stringify({
+        ...magicBoatLocalData,
+        [key]: newMagicBoatData,
+      })
+    );
+    localStorage?.setItem(
+      "outBoatCount",
+      JSON.stringify({
+        ...outBoatLocalData,
+        [key]: newOutBoatData,
+      })
+    );
+
+    // 총합 계산 및 상태 업데이트
+    setInBoatTotalCountState(newInBoatData);
+    setMagicBoatTotalCountState(newMagicBoatData);
+    setOutBoatTotalCountState(newOutBoatData);
+
+    // 카운트 초기화
+    setInBoatCountState(0);
+    setMagicBoatCountState(0);
+    setOutBoatCountState(0);
   };
 
   useEffect(() => {
-    const memo = localStorage.getItem("memo");
-    if (memo) {
-      setMemo(memo);
-    }
+    const inBoatLocalData: CountType = localStorage?.getItem("inBoatCount")
+      ? JSON.parse(localStorage.getItem("inBoatCount") || "{}")
+      : {};
+    const magicBoatLocalData: CountType = localStorage?.getItem(
+      "magicBoatCount"
+    )
+      ? JSON.parse(localStorage.getItem("magicBoatCount") || "{}")
+      : {};
+    const outBoatLocalData: CountType = localStorage?.getItem("outBoatCount")
+      ? JSON.parse(localStorage.getItem("outBoatCount") || "{}")
+      : {};
+    setInBoatTotalCountState(
+      Object.values(inBoatLocalData).reduce((sum, value) => sum + value, 0)
+    );
+    setMagicBoatTotalCountState(
+      Object.values(magicBoatLocalData).reduce((sum, value) => sum + value, 0)
+    );
+    setOutBoatTotalCountState(
+      Object.values(outBoatLocalData).reduce((sum, value) => sum + value, 0)
+    );
   }, []);
+
+  const handleMinusClick = (type: string, count: number) => {
+    if (type === "인보트") {
+      setInBoatCountState(inBoatCountState - count);
+    }
+    if (type === "매직보트") {
+      setMagicBoatCountState(magicBoatCountState - count);
+    }
+    if (type === "아웃보트") {
+      setOutBoatCountState(outBoatCountState - count);
+    }
+  };
+
+  const handlePlusClick = (type: string, count: number) => {
+    if (type === "인보트") {
+      setInBoatCountState(inBoatCountState + count);
+    }
+    if (type === "매직보트") {
+      setMagicBoatCountState(magicBoatCountState + count);
+    }
+    if (type === "아웃보트") {
+      setOutBoatCountState(outBoatCountState + count);
+    }
+  };
+
+  const list = [
+    {
+      type: "인보트",
+      count: inBoatCountState,
+      totalCount: inBoatTotalCountState,
+    },
+    {
+      type: "매직보트",
+      count: magicBoatCountState,
+      totalCount: magicBoatTotalCountState,
+    },
+    {
+      type: "아웃보트",
+      count: outBoatCountState,
+      totalCount: outBoatTotalCountState,
+    },
+  ];
+
+  const Boat = ({
+    type,
+    count,
+    totalCount,
+    handlerMinusClick,
+    handlerPlusClick,
+  }: {
+    type: string;
+    count: number;
+    totalCount: number;
+    handlerMinusClick: (type: string, count: number) => void;
+    handlerPlusClick: (type: string, count: number) => void;
+  }) => {
+    return (
+      <div className={styles.rowContainer}>
+        <div
+          className={styles.boatName}
+          style={{
+            borderColor:
+              type === "인보트"
+                ? "rgb(141, 110, 255)"
+                : type === "매직보트"
+                ? "black"
+                : "rgb(255, 110, 110)",
+            color:
+              type === "인보트"
+                ? "rgb(141, 110, 255)"
+                : type === "매직보트"
+                ? "black"
+                : "rgb(255, 110, 110)",
+          }}
+        >
+          <p>{type}</p>
+          <p>{totalCount}</p>
+        </div>
+        <div className={styles.inputContainer}>
+          <div className={styles.dateChangeButtonContainer}>
+            <button
+              className={styles.dateChangeButton}
+              onClick={() => handlerMinusClick(type, 1)}
+            >
+              - 1
+            </button>
+            <button
+              className={styles.dateChangeButton}
+              onClick={() => handlerMinusClick(type, 0.5)}
+            >
+              - 0.5
+            </button>
+          </div>
+          <div className={styles.valueContainer}>{count.toFixed(1)}</div>
+          <div className={styles.dateChangeButtonContainer}>
+            <button
+              className={styles.dateChangeButton}
+              onClick={() => handlerPlusClick(type, 1)}
+            >
+              + 1
+            </button>
+            <button
+              className={styles.dateChangeButton}
+              onClick={() => handlerPlusClick(type, 0.5)}
+            >
+              + 0.5
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  };
 
   return (
     <div className={styles.memoContainer}>
-      Memo
-      <textarea
-        className={styles.textarea}
-        onChange={handleChange}
-        value={memo}
-      />
-      <button className={styles.button} onClick={handleSave}>
+      {/* 날짜 */}
+      <div className={styles.title}>{new Date().toLocaleDateString()}</div>
+
+      {/* 보트 컨테이너 */}
+      <div className={styles.boatContainer}>
+        {list.map((item, index) => (
+          <Boat
+            key={index}
+            type={item.type}
+            count={item.count}
+            totalCount={item.totalCount}
+            handlerMinusClick={handleMinusClick}
+            handlerPlusClick={handlePlusClick}
+          />
+        ))}
+      </div>
+
+      {/* 저장 버튼 */}
+      <button className={styles.submitButton} onClick={handleSave}>
         Save
       </button>
     </div>
