@@ -181,25 +181,21 @@ const Memo = () => {
   }) => {
     return (
       <div className={styles.rowContainer}>
-        <div
-          className={styles.boatNameContainer}
-          style={{
-            borderColor:
-              type === "인보트"
-                ? "rgb(141, 110, 255)"
-                : type === "매직보트"
-                ? "black"
-                : "rgb(255, 110, 110)",
-            color:
-              type === "인보트"
-                ? "rgb(141, 110, 255)"
-                : type === "매직보트"
-                ? "black"
-                : "rgb(255, 110, 110)",
-          }}
-        >
-          <p className={styles.boatName}>{type}</p>
-          <p className={styles.totalCount}>total: {totalCount}</p>
+        <div className={styles.boatNameContainer}>
+          <p
+            className={styles.boatName}
+            style={{
+              color:
+                type === "인보트"
+                  ? "rgb(141, 110, 255)"
+                  : type === "매직보트"
+                  ? "rgb(255, 110, 110)"
+                  : "rgb(110, 255, 110)",
+            }}
+          >
+            {type}
+          </p>
+          <p className={styles.totalCount}>전체: {totalCount}</p>
         </div>
         <div className={styles.inputContainer}>
           <div className={styles.dateChangeButtonContainer}>
@@ -216,7 +212,10 @@ const Memo = () => {
               - 0.5
             </button>
           </div>
-          <div className={styles.valueContainer}>{count.toFixed(1)}</div>
+          <div className={styles.todayCountValueContainer}>
+            <p className={styles.todayCount}>오늘: {totalCount}</p>
+            <div className={styles.valueContainer}>{count.toFixed(1)}</div>
+          </div>
           <div className={styles.dateChangeButtonContainer}>
             <button
               className={styles.dateChangeButton}
