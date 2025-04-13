@@ -8,6 +8,8 @@ type CountType = {
 };
 
 const Memo = () => {
+  const dayMap = ["일", "월", "화", "수", "목", "금", "토"];
+
   // 카운트
   const [inBoatCountState, setInBoatCountState] = useState<number>(0);
   const [magicBoatCountState, setMagicBoatCountState] = useState<number>(0);
@@ -22,6 +24,10 @@ const Memo = () => {
 
   // 저장
   const handleSave = () => {
+    window.confirm(
+      `인보트: ${inBoatCountState}\n\n매직보트: ${magicBoatCountState}\n\n아웃보트: ${outBoatCountState}`
+    );
+
     const month = new Date().getMonth() + 1;
     const day = new Date().getDate();
     const key = `${month}-${day}`;
@@ -108,13 +114,25 @@ const Memo = () => {
 
   const handleMinusClick = (type: string, count: number) => {
     if (type === "인보트") {
-      setInBoatCountState(inBoatCountState - count);
+      if (inBoatCountState - count < 0) {
+        setInBoatCountState(0);
+      } else {
+        setInBoatCountState(inBoatCountState - count);
+      }
     }
     if (type === "매직보트") {
-      setMagicBoatCountState(magicBoatCountState - count);
+      if (magicBoatCountState - count < 0) {
+        setMagicBoatCountState(0);
+      } else {
+        setMagicBoatCountState(magicBoatCountState - count);
+      }
     }
     if (type === "아웃보트") {
-      setOutBoatCountState(outBoatCountState - count);
+      if (outBoatCountState - count < 0) {
+        setOutBoatCountState(0);
+      } else {
+        setOutBoatCountState(outBoatCountState - count);
+      }
     }
   };
 
@@ -164,7 +182,7 @@ const Memo = () => {
     return (
       <div className={styles.rowContainer}>
         <div
-          className={styles.boatName}
+          className={styles.boatNameContainer}
           style={{
             borderColor:
               type === "인보트"
@@ -180,8 +198,8 @@ const Memo = () => {
                 : "rgb(255, 110, 110)",
           }}
         >
-          <p>{type}</p>
-          <p>{totalCount}</p>
+          <p className={styles.boatName}>{type}</p>
+          <p className={styles.totalCount}>total: {totalCount}</p>
         </div>
         <div className={styles.inputContainer}>
           <div className={styles.dateChangeButtonContainer}>
@@ -221,7 +239,9 @@ const Memo = () => {
   return (
     <div className={styles.memoContainer}>
       {/* 날짜 */}
-      <div className={styles.title}>{new Date().toLocaleDateString()}</div>
+      <div className={styles.title}>
+        {new Date().toLocaleDateString()} ({dayMap[new Date().getDay()]})
+      </div>
 
       {/* 보트 컨테이너 */}
       <div className={styles.boatContainer}>
@@ -239,7 +259,7 @@ const Memo = () => {
 
       {/* 저장 버튼 */}
       <button className={styles.submitButton} onClick={handleSave}>
-        Save
+        SAVE
       </button>
     </div>
   );
