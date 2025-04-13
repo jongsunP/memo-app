@@ -1,9 +1,6 @@
 .memoContainer {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  width: 100vw;
-  height: 100vh;
   padding: 60px 40px;
   gap: 40px;
 }
@@ -89,7 +86,6 @@
   height: 80px;
   border: none;
   cursor: pointer;
-  margin: 40px auto 40px auto;
   border-radius: 5px;
   font-weight: bold;
   background-color: black;
