@@ -10,7 +10,7 @@ type CountType = {
 const Memo = () => {
   const dayMap = ["일", "월", "화", "수", "목", "금", "토"];
 
-  // 카운트
+  // 카운트 스테이트
   const [inBoatCountState, setInBoatCountState] = useState<number>(0);
   const [magicBoatCountState, setMagicBoatCountState] = useState<number>(0);
   const [outBoatCountState, setOutBoatCountState] = useState<number>(0);
@@ -22,15 +22,22 @@ const Memo = () => {
   const [outBoatTotalCountState, setOutBoatTotalCountState] =
     useState<number>(0);
 
+  // 투데이 카운트
+  const [inBoatTodayCountState, setInBoatTodayCountState] = useState<number>(0);
+  const [magicBoatTodayCountState, setMagicBoatTodayCountState] =
+    useState<number>(0);
+  const [outBoatTodayCountState, setOutBoatTodayCountState] =
+    useState<number>(0);
+
+  const month = new Date().getMonth() + 1;
+  const day = new Date().getDate();
+  const TodayKey = `${month}-${day}`;
+
   // 저장
   const handleSave = () => {
     window.confirm(
       `인보트: ${inBoatCountState}\n\n매직보트: ${magicBoatCountState}\n\n아웃보트: ${outBoatCountState}`
     );
-
-    const month = new Date().getMonth() + 1;
-    const day = new Date().getDate();
-    const key = `${month}-${day}`;
 
     const inBoatLocalData: CountType = localStorage?.getItem("inBoatCount")
       ? JSON.parse(localStorage.getItem("inBoatCount") || "{}")
@@ -45,14 +52,14 @@ const Memo = () => {
       : {};
 
     // 새로운 데이터 추가
-    const newInBoatData = inBoatLocalData[key]
-      ? inBoatLocalData[key] + inBoatCountState
+    const newInBoatData = inBoatLocalData[TodayKey]
+      ? inBoatLocalData[TodayKey] + inBoatCountState
       : inBoatCountState;
-    const newMagicBoatData = magicBoatLocalData[key]
-      ? magicBoatLocalData[key] + magicBoatCountState
+    const newMagicBoatData = magicBoatLocalData[TodayKey]
+      ? magicBoatLocalData[TodayKey] + magicBoatCountState
       : magicBoatCountState;
-    const newOutBoatData = outBoatLocalData[key]
-      ? outBoatLocalData[key] + outBoatCountState
+    const newOutBoatData = outBoatLocalData[TodayKey]
+      ? outBoatLocalData[TodayKey] + outBoatCountState
       : outBoatCountState;
 
     // 로컬스토리지에 저장
@@ -60,21 +67,21 @@ const Memo = () => {
       "inBoatCount",
       JSON.stringify({
         ...inBoatLocalData,
-        [key]: newInBoatData,
+        [TodayKey]: newInBoatData,
       })
     );
     localStorage?.setItem(
       "magicBoatCount",
       JSON.stringify({
         ...magicBoatLocalData,
-        [key]: newMagicBoatData,
+        [TodayKey]: newMagicBoatData,
       })
     );
     localStorage?.setItem(
       "outBoatCount",
       JSON.stringify({
         ...outBoatLocalData,
-        [key]: newOutBoatData,
+        [TodayKey]: newOutBoatData,
       })
     );
 
@@ -101,6 +108,15 @@ const Memo = () => {
     const outBoatLocalData: CountType = localStorage?.getItem("outBoatCount")
       ? JSON.parse(localStorage.getItem("outBoatCount") || "{}")
       : {};
+    setInBoatTodayCountState(
+      inBoatLocalData[TodayKey] ? inBoatLocalData[TodayKey] : 0
+    );
+    setMagicBoatTodayCountState(
+      magicBoatLocalData[TodayKey] ? magicBoatLocalData[TodayKey] : 0
+    );
+    setOutBoatTodayCountState(
+      outBoatLocalData[TodayKey] ? outBoatLocalData[TodayKey] : 0
+    );
     setInBoatTotalCountState(
       Object.values(inBoatLocalData).reduce((sum, value) => sum + value, 0)
     );
@@ -153,16 +169,19 @@ const Memo = () => {
       type: "인보트",
       count: inBoatCountState,
       totalCount: inBoatTotalCountState,
+      todayCount: inBoatTodayCountState,
     },
     {
       type: "매직보트",
       count: magicBoatCountState,
       totalCount: magicBoatTotalCountState,
+      todayCount: magicBoatTodayCountState,
     },
     {
       type: "아웃보트",
       count: outBoatCountState,
       totalCount: outBoatTotalCountState,
+      todayCount: outBoatTodayCountState,
     },
   ];
 
@@ -170,12 +189,14 @@ const Memo = () => {
     type,
     count,
     totalCount,
+    todayCount,
     handlerMinusClick,
     handlerPlusClick,
   }: {
     type: string;
     count: number;
     totalCount: number;
+    todayCount: number;
     handlerMinusClick: (type: string, count: number) => void;
     handlerPlusClick: (type: string, count: number) => void;
   }) => {
@@ -213,7 +234,7 @@ const Memo = () => {
             </button>
           </div>
           <div className={styles.todayCountValueContainer}>
-            <p className={styles.todayCount}>오늘: {totalCount}</p>
+            <p className={styles.todayCount}>오늘: {todayCount}</p>
             <div className={styles.valueContainer}>{count.toFixed(1)}</div>
           </div>
           <div className={styles.dateChangeButtonContainer}>
@@ -250,6 +271,7 @@ const Memo = () => {
             type={item.type}
             count={item.count}
             totalCount={item.totalCount}
+            todayCount={item.todayCount}
             handlerMinusClick={handleMinusClick}
             handlerPlusClick={handlePlusClick}
           />
