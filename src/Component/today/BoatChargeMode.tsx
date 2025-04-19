@@ -14,7 +14,6 @@ interface BoatChargeModeProps {
  * 보트 충전 모드 컴포넌트
  */
 const BoatChargeMode = ({ isOpenBoatType, callback }: BoatChargeModeProps) => {
-  console.log(isOpenBoatType);
   // 충전 모드가 아니면 렌더링 하지 않음
   if (!isOpenBoatType || isOpenBoatType.mode !== "CHARGE") {
     return null;
