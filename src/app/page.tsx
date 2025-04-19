@@ -1,16 +1,18 @@
 "use client";
 
+import Manage from "@/Component/manage/Manage";
+import Today from "@/Component/today/Today";
 import styled from "styled-components";
 
 export default function Home() {
   return (
-    <Button>
-      <p>Click me</p>
-    </Button>
+    <StyledContainer>
+      {/* <Manage /> */}
+      <Today />
+    </StyledContainer>
   );
 }
 
-const Button = styled.button`
-  background-color: red;
-  color: white;
+const StyledContainer = styled.div`
+  background-color: black;
 `;
