@@ -1,10 +1,16 @@
-import Memo from "@/Component/memo";
-import styles from "./page.module.css";
+"use client";
+
+import styled from "styled-components";
 
 export default function Home() {
   return (
-    <div className={styles.page}>
-      <Memo />
-    </div>
+    <Button>
+      <p>Click me</p>
+    </Button>
   );
 }
+
+const Button = styled.button`
+  background-color: red;
+  color: white;
+`;
