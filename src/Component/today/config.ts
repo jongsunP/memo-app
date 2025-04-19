@@ -132,7 +132,7 @@ export const BOAT_INFO: {
     },
     setInventoryStorage: (data: CountType) => {
       localStorage?.setItem(
-        boatLocalStorageInventoryKey.in,
+        boatLocalStorageInventoryKey.magic,
         JSON.stringify({
           ...JSON.parse(
             localStorage.getItem(boatLocalStorageInventoryKey.magic) || "{}"

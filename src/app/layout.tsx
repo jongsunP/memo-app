@@ -7,6 +7,13 @@ export default function RootLayout({
 }) {
   return (
     <html>
+      <head>
+        <title>Wake Life</title>
+        <meta
+          name="viewport"
+          content="initial-scale=1.0; maximum-scale=1.0; minimum-scale=1.0; user-scalable=no;"
+        />
+      </head>
       <body>
         <StyledComponentsRegistry>{children}</StyledComponentsRegistry>
       </body>
