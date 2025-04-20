@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { BOAT_INFO, TodayKey, OpenBoatType } from "./config";
 import { useState } from "react";
+import CountButtonGroup from "./CountButtonGroup";
 
 /*
  * 보트 충전 모드 컴포넌트 타입
@@ -27,11 +28,6 @@ const BoatChargeMode = ({ isOpenBoatType, callback }: BoatChargeModeProps) => {
   // 입력 값 상태
   const [inputValue, setInputValue] = useState<number>(0);
 
-  // 입력 값 변경 이벤트
-  const handlerInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInputValue(Number(e.target.value));
-  };
-
   // 저장
   const handlerSubmit = () => {
     BOAT_INFO[isOpenBoatType.type].setInventoryStorage({
@@ -57,19 +53,25 @@ const BoatChargeMode = ({ isOpenBoatType, callback }: BoatChargeModeProps) => {
         >
           {BOAT_INFO[isOpenBoatType.type].label}
         </div>
-        <div className="totalCount">전체: {inventory}</div>
+        <div className="totalCount">남은 쿠폰: {inventory}</div>
       </div>
 
       {/* 버튼 컨테이너 */}
-      <input
-        className="inputContainer"
-        onChange={handlerInputChange}
-        value={inputValue || ""}
-        type="number"
+      <CountButtonGroup
+        inputValue={inputValue}
+        setInputValue={setInputValue}
+        list={[1, 10, 50, 100]}
       />
 
       {/* 저장 버튼 */}
-      <button className="submitButton" onClick={handlerSubmit}>
+      <button
+        className="submitButton"
+        onClick={(e) => {
+          e.stopPropagation();
+          e.preventDefault();
+          handlerSubmit();
+        }}
+      >
         SAVE
       </button>
     </StyledWrapper>

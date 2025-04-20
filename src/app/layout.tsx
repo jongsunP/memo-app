@@ -1,10 +1,44 @@
+"use client";
+
 import StyledComponentsRegistry from "@/lib/registry";
+import { useEffect } from "react";
+import { createGlobalStyle } from "styled-components";
+
+/*
+ * 전역 스타일
+ */
+const GlobalStyle = createGlobalStyle`
+  body {
+    margin: 0;
+  }
+`;
 
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  useEffect(() => {
+    const handleTouchStart = (event: TouchEvent) => {
+      document.documentElement.addEventListener(
+        "touchstart",
+        handleTouchStart,
+        false
+      );
+      if (event.touches.length > 1) {
+        event.preventDefault();
+      }
+    };
+
+    return () => {
+      document.documentElement.removeEventListener(
+        "touchstart",
+        handleTouchStart,
+        false
+      );
+    };
+  }, []);
+
   return (
     <html>
       <head>
@@ -15,6 +49,7 @@ export default function RootLayout({
         />
       </head>
       <body>
+        <GlobalStyle />
         <StyledComponentsRegistry>{children}</StyledComponentsRegistry>
       </body>
     </html>

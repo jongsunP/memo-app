@@ -33,7 +33,13 @@ const Boat = ({ type, isOpenBoatType, setIsOpenBoatType }: BoatProps) => {
   );
 
   return (
-    <StyledWrapper onClick={() => setIsOpenBoatType({ type, mode: "ADD" })}>
+    <StyledWrapper
+      onClick={(e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        setIsOpenBoatType({ type, mode: "ADD" });
+      }}
+    >
       {/* 보트 이름 컨테이너 */}
       <div className="boatNameContainer">
         <div
@@ -46,7 +52,7 @@ const Boat = ({ type, isOpenBoatType, setIsOpenBoatType }: BoatProps) => {
           {BOAT_INFO[type].label}
         </div>
         <div className="totalCount">
-          전체: {totalCount} / {inventory}
+          쿠폰: {totalCount} / {inventory}
         </div>
       </div>
       <div className="todayCount">

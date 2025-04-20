@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { BOAT_INFO, TodayKey, OpenBoatType } from "./config";
 import { useState } from "react";
+import CountButtonGroup from "./CountButtonGroup";
 
 /*
  * 보트 추가 모드 컴포넌트 타입
@@ -36,15 +37,6 @@ const BoatAddMode = ({ isOpenBoatType, callback }: BoatAddModeProps) => {
   // 입력 값 상태
   const [inputValue, setInputValue] = useState<number>(0);
 
-  // 입력 값 변경 이벤트
-  const handlerClickButton = (type: "PLUS" | "MINUS", number: number) => {
-    if (type === "PLUS") {
-      setInputValue(inputValue + number);
-    } else {
-      setInputValue(inputValue - number);
-    }
-  };
-
   // 저장
   const handlerSubmit = () => {
     BOAT_INFO[isOpenBoatType.type].setCountStorage({
@@ -71,7 +63,7 @@ const BoatAddMode = ({ isOpenBoatType, callback }: BoatAddModeProps) => {
           {BOAT_INFO[isOpenBoatType.type].label}
         </div>
         <div className="totalCount">
-          전체: {totalCount} / {inventory}
+          쿠폰: {totalCount} / {inventory}
         </div>
       </div>
 
@@ -82,45 +74,21 @@ const BoatAddMode = ({ isOpenBoatType, callback }: BoatAddModeProps) => {
       </div>
 
       {/* 버튼 컨테이너 */}
-      <div className="buttonContainer">
-        {/* 날짜 변경 버튼 컨테이너 */}
-        <div className="dateChangeButtonContainer">
-          <button
-            className="dateChangeButton"
-            onClick={() => handlerClickButton("MINUS", 1)}
-          >
-            - 1
-          </button>
-          <button
-            className="dateChangeButton"
-            onClick={() => handlerClickButton("MINUS", 0.5)}
-          >
-            - 0.5
-          </button>
-        </div>
-
-        {/* 오늘 카운트 값 컨테이너 */}
-        <div className="valueContainer">{inputValue.toFixed(1)}</div>
-
-        {/* 입력 버튼 컨테이너 */}
-        <div className="dateChangeButtonContainer">
-          <button
-            className="dateChangeButton"
-            onClick={() => handlerClickButton("PLUS", 1)}
-          >
-            + 1
-          </button>
-          <button
-            className="dateChangeButton"
-            onClick={() => handlerClickButton("PLUS", 0.5)}
-          >
-            + 0.5
-          </button>
-        </div>
-      </div>
+      <CountButtonGroup
+        inputValue={inputValue}
+        setInputValue={setInputValue}
+        list={[0.5, 1]}
+      />
 
       {/* 저장 버튼 */}
-      <button className="submitButton" onClick={handlerSubmit}>
+      <button
+        className="submitButton"
+        onClick={(e) => {
+          e.stopPropagation();
+          e.preventDefault();
+          handlerSubmit();
+        }}
+      >
         SAVE
       </button>
     </StyledWrapper>

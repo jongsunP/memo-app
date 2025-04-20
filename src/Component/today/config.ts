@@ -16,6 +16,7 @@ export const TodayKey = `${new Date().getFullYear()}-${
 
 // 보트 타입
 export type BoatType = "in" | "magic" | "out";
+export const boatTypeList: BoatType[] = ["in", "magic", "out"];
 
 // 보트 카운트 키
 const boatLocalStorageCountKey = {

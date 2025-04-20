@@ -23,8 +23,6 @@ const BottomSheet = ({ isOpen, callback, children }: BottomSheetProps) => {
 
   // 배경 클릭 이벤트
   const handlerClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
     const isBackgroundClick =
       bottomSheetRef.current !== null &&
       !bottomSheetRef.current.contains(e.target as Node);
@@ -34,10 +32,24 @@ const BottomSheet = ({ isOpen, callback, children }: BottomSheetProps) => {
   };
 
   return (
-    <StyledWrapper $isOpen={isOpen} onClick={handlerClick}>
+    <StyledWrapper
+      $isOpen={isOpen}
+      onClick={(e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        handlerClick(e);
+      }}
+    >
       <div className="bottomSheetContainer" ref={bottomSheetRef}>
         {/* 닫기 버튼 */}
-        <div className="closeButton" onClick={() => callback?.()}>
+        <div
+          className="closeButton"
+          onClick={(e) => {
+            e.stopPropagation();
+            e.preventDefault();
+            callback?.();
+          }}
+        >
           X
         </div>
 
